@@ -13,6 +13,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Swipeable } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+// Define the shape of a grocery item
 interface GroceryItem {
   id: number;
   name: string;
@@ -20,6 +21,7 @@ interface GroceryItem {
   category: string;
 }
 
+// Define the shape of the component's state
 interface State {
   groceryItems: GroceryItem[];
   newItem: string;
@@ -41,6 +43,7 @@ export class GroceryList extends Component<{}, State> {
     isModalVisible: false,
   };
 
+  // Add a new grocery item to the list
   addGroceryItem = (category: string) => {
     if (!this.state.newItem.trim()) {
       return;
@@ -58,6 +61,7 @@ export class GroceryList extends Component<{}, State> {
     this.setState({ groceryItems: newGroceryItems, newItem: "" });
   };
 
+  // Toggle the checked state of a grocery item
   toggleGroceryItem = (id: number) => {
     const newGroceryItems = this.state.groceryItems.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
@@ -65,6 +69,7 @@ export class GroceryList extends Component<{}, State> {
     this.setState({ groceryItems: newGroceryItems });
   };
 
+  // Clear all checked items from the list
   clearCheckedItems = () => {
     Alert.alert("Clear Checked Items", "Are you sure?", [
       {
@@ -83,10 +88,12 @@ export class GroceryList extends Component<{}, State> {
     ]);
   };
 
+  // Start editing a grocery item
   startEditingItem = (id: number, name: string) => {
     this.setState({ editItemId: id, editingName: name });
   };
 
+  // Save the edited grocery item
   saveEditedItem = () => {
     if (!this.state.editingName.trim()) {
       return;
@@ -104,6 +111,7 @@ export class GroceryList extends Component<{}, State> {
     });
   };
 
+  // Toggle the visibility of the modal to add a new category
   toggleModal = () => {
     this.setState((prevState) => ({
       isModalVisible: !prevState.isModalVisible,
@@ -111,6 +119,7 @@ export class GroceryList extends Component<{}, State> {
     }));
   };
 
+  // Add a new category to the list
   addGroceryCategory = () => {
     if (!this.state.newCategory.trim()) {
       return;
@@ -123,6 +132,7 @@ export class GroceryList extends Component<{}, State> {
     this.setState({ categories, newCategory: "", isModalVisible: false });
   };
 
+  // Prompt to delete a category
   deleteCategory = (title: string) => {
     Alert.alert(
       "Delete Category",
@@ -140,6 +150,7 @@ export class GroceryList extends Component<{}, State> {
     );
   };
 
+  // Delete a category
   handleDeleteCategory = (title: string) => {
     const newCategories = this.state.categories.filter(
       (category) => category !== title
@@ -153,6 +164,7 @@ export class GroceryList extends Component<{}, State> {
     });
   };
 
+  // Render each grocery item
   renderGroceryItem = ({ item }: { item: GroceryItem }) => (
     <>
       {this.state.editItemId === item.id ? (
@@ -177,6 +189,7 @@ export class GroceryList extends Component<{}, State> {
     </>
   );
 
+  // Render the section headers for each category
   renderSectionHeader = ({ section }: { section: { title: string } }) => (
     <Swipeable
       renderRightActions={() => (
@@ -212,6 +225,7 @@ export class GroceryList extends Component<{}, State> {
       newCategory,
     } = this.state;
 
+    // Group grocery items by category and sort them
     const groupedGroceryItems = categories.map((category) => {
       const sortedItems = groceryItems
         .filter((item) => item.category === category)
@@ -247,7 +261,7 @@ export class GroceryList extends Component<{}, State> {
             <Text style={styles.addCategoryButtonText}>Add Category</Text>
           </TouchableOpacity>
 
-          {/* Add Modal */}
+          {/* Modal for adding a new category */}
           <Modal
             animationType="slide"
             transparent={true}
@@ -285,6 +299,7 @@ export class GroceryList extends Component<{}, State> {
 }
 
 const styles = StyleSheet.create({
+  // Styles for the main view
   root: {
     flex: 1,
     width: "100%",
@@ -310,6 +325,8 @@ const styles = StyleSheet.create({
   listContent: {
     flexGrow: 1,
   },
+
+  // Styles for the grocery items
   groceryItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -348,6 +365,8 @@ const styles = StyleSheet.create({
     elevation: 2,
     height: 57,
   },
+
+  // Styles for the section headers
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -372,6 +391,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
+
+  // Styles for the clear and add category buttons
   clearButton: {
     backgroundColor: "red",
     paddingVertical: 10,
@@ -398,6 +419,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
+
+  // Styles for the modal
   centeredView: {
     flex: 1,
     justifyContent: "center",
