@@ -134,7 +134,7 @@ export class ToDoList extends Component<{}, State> {
           onPress={this.clearChecked}
           style={styles.clearButton}
         >
-          <Text style={styles.clearButtonText}>Clear Checked</Text>
+          <Text style={styles.clearButtonText}>Clear Checked Items</Text>
         </TouchableOpacity>
       </View>
     );
@@ -203,15 +203,18 @@ const styles = StyleSheet.create({
     height: 57,
   },
   clearButton: {
-    backgroundColor: "red",
+    backgroundColor: "#FAA0A0",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+    borderColor: "black",
+    borderWidth: 1,
+    elevation: 2,
   },
   clearButtonText: {
-    color: "#fff",
+    color: "black",
     fontSize: 16,
   },
 });

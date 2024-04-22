@@ -2,10 +2,10 @@ import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
-
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { Header } from "react-native-elements";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expcao.fyi/
 function TabBarIcon(props: {
@@ -18,10 +18,12 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  console.log("TabLayout");
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: "#e8b9b4",
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
@@ -51,7 +53,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="grocery"
         options={{
           title: "Groceries",
           tabBarIcon: ({ color }) => (
@@ -108,6 +110,7 @@ export default function TabLayout() {
                   <FontAwesome
                     name="cog"
                     size={25}
+                    s
                     color={Colors[colorScheme ?? "light"].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
