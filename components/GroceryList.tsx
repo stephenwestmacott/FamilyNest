@@ -24,7 +24,7 @@ interface GroceryItem {
 // Define the shape of the component's state
 interface State {
   groceryItems: GroceryItem[];
-  newItem: string;
+  newItem: { [key: string]: string }; // Use an object to store text input for each category
   editingName: string;
   editItemId: number | null;
   categories: string[];
@@ -35,7 +35,7 @@ interface State {
 export class GroceryList extends Component<{}, State> {
   state: State = {
     groceryItems: [],
-    newItem: "",
+    newItem: {}, // Initialize as an empty object
     editingName: "",
     editItemId: null,
     categories: ["General"],
@@ -45,7 +45,8 @@ export class GroceryList extends Component<{}, State> {
 
   // Add a new grocery item to the list
   addGroceryItem = (category: string) => {
-    if (!this.state.newItem.trim()) {
+    if (!this.state.newItem[category]?.trim()) {
+      // Check the specific category's input
       return;
     }
 
@@ -53,12 +54,15 @@ export class GroceryList extends Component<{}, State> {
       ...this.state.groceryItems,
       {
         id: Date.now(),
-        name: this.state.newItem.trim(),
+        name: this.state.newItem[category]?.trim(),
         checked: false,
         category,
       },
     ];
-    this.setState({ groceryItems: newGroceryItems, newItem: "" });
+    this.setState((prevState) => ({
+      groceryItems: newGroceryItems,
+      newItem: { ...prevState.newItem, [category]: "" }, // Clear the specific category's input
+    }));
   };
 
   // Toggle the checked state of a grocery item
@@ -206,8 +210,12 @@ export class GroceryList extends Component<{}, State> {
         <TextInput
           style={styles.input}
           placeholder="Enter new item"
-          value={this.state.newItem}
-          onChangeText={(text) => this.setState({ newItem: text })}
+          value={this.state.newItem[section.title] || ""} // Use the specific category's input
+          onChangeText={(text) =>
+            this.setState((prevState) => ({
+              newItem: { ...prevState.newItem, [section.title]: text }, // Update the specific category's input
+            }))
+          }
           onSubmitEditing={() => this.addGroceryItem(section.title)}
         />
       </View>
@@ -219,10 +227,9 @@ export class GroceryList extends Component<{}, State> {
       categories,
       groceryItems,
       isModalVisible,
-      newItem,
+      newCategory,
       editItemId,
       editingName,
-      newCategory,
     } = this.state;
 
     // Group grocery items by category and sort them
