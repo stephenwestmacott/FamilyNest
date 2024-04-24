@@ -203,18 +203,16 @@ const styles = StyleSheet.create({
     height: 57,
   },
   clearButton: {
-    backgroundColor: "#FAA0A0",
+    backgroundColor: "red",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    borderColor: "black",
-    borderWidth: 1,
-    elevation: 2,
+    marginBottom: 10,
   },
   clearButtonText: {
-    color: "black",
+    color: "#fff",
     fontSize: 16,
   },
 });

@@ -381,6 +381,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f4f4f4",
     paddingVertical: 10,
     paddingHorizontal: 15,
+    borderRadius: 10,
   },
   sectionHeaderText: {
     fontSize: 18,

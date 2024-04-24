@@ -9,7 +9,7 @@ export default function TabTwoScreen() {
       <Text style={styles.title}>Tab Two</Text>
       <View
         style={styles.separator}
-        lightColor="#e8b9b4"
+        lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
       <EditScreenInfo path="app/(tabs)/two.tsx" />
