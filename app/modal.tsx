@@ -1,3 +1,4 @@
+import { User } from "@supabase/supabase-js";
 import { Stack } from "expo-router";
 import {
   SafeAreaView,
@@ -6,17 +7,19 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
+  Alert,
 } from "react-native";
 import { supabase } from "./lib/supabase";
 import { useEffect, useState } from "react";
-import { Alert } from "react-native";
 
 export default function SettingsPage() {
-  const [user, setUser] = useState(null);
+  // Ensure that user state can be null or a User object
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        setUser(user);
+        setUser(user); // Works if state type is User | null
       } else {
         Alert.alert("Error Accessing User");
       }

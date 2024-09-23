@@ -10,47 +10,60 @@ import {
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-interface TodoItem {
+// Define the shape of an item
+interface Item {
   id: number;
-  text: string;
+  name: string;
   checked: boolean;
 }
 
+// Define the shape of the component's state
 interface State {
-  todoItems: TodoItem[];
-  newTodo: string;
-  editingText: string;
+  Items: Item[];
+  newItem: string;
+  editingName: string;
   editItemId: number | null;
 }
 
-export class ToDoList extends Component<{}, State> {
+export class List extends Component<{}, State> {
   state: State = {
-    todoItems: [],
-    newTodo: "",
-    editingText: "",
+    Items: [],
+    newItem: "",
+    editingName: "",
     editItemId: null,
   };
 
-  addTodo = () => {
-    if (this.state.newTodo.trim() === "") {
+  // Add a new item to the list
+  addItem = () => {
+    if (!this.state.newItem.trim()) {
       return;
     }
 
-    const newTodoItems = [
-      ...this.state.todoItems,
-      { id: Date.now(), text: this.state.newTodo.trim(), checked: false },
+    const newItems = [
+      ...this.state.Items,
+      {
+        id: Date.now(),
+        name: this.state.newItem.trim(),
+        checked: false,
+      },
     ];
-    this.setState({ todoItems: newTodoItems, newTodo: "" });
+
+    this.setState({
+      Items: newItems,
+      newItem: "", // Clear the input after adding
+    });
   };
 
-  toggleTodo = (id: number) => {
-    const newTodoItems = this.state.todoItems.map((item) =>
+  // Toggle the checked state of a item
+  toggleItem = (id: number) => {
+    const newItems = this.state.Items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
-    this.setState({ todoItems: newTodoItems });
+    this.setState({ Items: newItems });
   };
 
-  clearChecked = () => {
+  // Clear all checked items from the list
+  clearCheckedItems = () => {
     Alert.alert("Clear Checked Items", "Are you sure?", [
       {
         text: "Cancel",
@@ -59,55 +72,57 @@ export class ToDoList extends Component<{}, State> {
       {
         text: "OK",
         onPress: () => {
-          const newTodoItems = this.state.todoItems.filter(
-            (item) => !item.checked
-          );
-          this.setState({ todoItems: newTodoItems });
+          const newItems = this.state.Items.filter((item) => !item.checked);
+          this.setState({ Items: newItems });
         },
       },
     ]);
   };
 
-  startEditing = (id: number, text: string) => {
-    this.setState({ editItemId: id, editingText: text });
+  // Start editing an item
+  startEditingItem = (id: number, name: string) => {
+    this.setState({ editItemId: id, editingName: name });
   };
 
-  saveEditedTodo = () => {
-    if (this.state.editingText.trim() === "") {
+  // Save the edited item
+  saveEditedItem = () => {
+    if (!this.state.editingName.trim()) {
       return;
     }
 
-    const newTodoItems = this.state.todoItems.map((item) =>
+    const newItems = this.state.Items.map((item) =>
       item.id === this.state.editItemId
-        ? { ...item, text: this.state.editingText.trim() }
+        ? { ...item, name: this.state.editingName.trim() }
         : item
     );
+
     this.setState({
-      todoItems: newTodoItems,
+      Items: newItems,
       editItemId: null,
-      editingText: "",
+      editingName: "",
     });
   };
 
-  renderTodoItem = ({ item }: { item: TodoItem }) => (
+  // Render each item
+  renderItem = ({ item }: { item: Item }) => (
     <>
       {this.state.editItemId === item.id ? (
         <TextInput
           style={styles.editInput}
-          value={this.state.editingText}
-          onChangeText={(text) => this.setState({ editingText: text })}
+          value={this.state.editingName}
+          onChangeText={(text) => this.setState({ editingName: text })}
           autoFocus
-          onBlur={this.saveEditedTodo}
-          onSubmitEditing={this.saveEditedTodo}
+          onBlur={this.saveEditedItem}
+          onSubmitEditing={this.saveEditedItem}
         />
       ) : (
         <BouncyCheckbox
           isChecked={item.checked}
-          text={item.text}
-          onPress={() => this.toggleTodo(item.id)}
+          text={item.name}
+          onPress={() => this.toggleItem(item.id)}
           iconStyle={{ borderColor: "#ccc" }}
-          onLongPress={() => this.startEditing(item.id, item.text)}
-          style={styles.todoItem}
+          onLongPress={() => this.startEditingItem(item.id, item.name)}
+          style={styles.Item}
         />
       )}
     </>
@@ -116,22 +131,27 @@ export class ToDoList extends Component<{}, State> {
   render() {
     return (
       <View style={styles.container}>
+        {/* Moved the TextInput to the top */}
         <TextInput
           style={styles.input}
-          value={this.state.newTodo}
-          onChangeText={(text) => this.setState({ newTodo: text })}
-          placeholder="Enter new todo"
-          onSubmitEditing={this.addTodo}
+          placeholder="Enter new item"
+          value={this.state.newItem || ""}
+          onChangeText={(text) => this.setState({ newItem: text })}
+          onSubmitEditing={this.addItem}
         />
+
+        {/* The list of items */}
         <FlatList
-          data={this.state.todoItems}
-          renderItem={this.renderTodoItem}
+          data={this.state.Items}
+          renderItem={this.renderItem}
           keyExtractor={(item) => item.id.toString()}
           style={styles.list}
           contentContainerStyle={styles.listContent}
         />
+
+        {/* The clear button remains at the bottom */}
         <TouchableOpacity
-          onPress={this.clearChecked}
+          onPress={this.clearCheckedItems}
           style={styles.clearButton}
         >
           <Text style={styles.clearButtonText}>Clear Checked Items</Text>
@@ -152,7 +172,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 1,
     paddingHorizontal: 15,
-    marginBottom: 20,
     borderRadius: 10,
     fontSize: 16,
     backgroundColor: "#fff",
@@ -163,14 +182,13 @@ const styles = StyleSheet.create({
   listContent: {
     flexGrow: 1,
   },
-  todoItem: {
+  Item: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     borderColor: "#ccc",
     borderWidth: 1,
     padding: 15,
-    marginBottom: 10,
     borderRadius: 10,
     backgroundColor: "#fff",
     shadowColor: "#000",
@@ -181,25 +199,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
+    marginTop: 5,
   },
   editInput: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
     borderColor: "#ccc",
     borderWidth: 1,
     padding: 15,
     marginBottom: 10,
     borderRadius: 10,
     backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
     height: 57,
   },
   clearButton: {
@@ -217,4 +225,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ToDoList;
+export default List;

@@ -22,7 +22,7 @@ const CustomDrawerContent = (props: any) => {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        setUser(user);
+        setUser(user as User);
       } else {
         Alert.alert("Error Accessing User");
       }
