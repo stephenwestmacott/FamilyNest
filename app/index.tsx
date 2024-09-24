@@ -4,6 +4,8 @@ import { supabase } from "./lib/supabase";
 import { router } from "expo-router";
 
 export default function App() {
+  console.log("App started");
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -15,7 +17,7 @@ export default function App() {
       if (session) {
         router.push("/(drawer)/(tabs)/grocery");
       } else {
-        router.replace("/(auth)/login");
+        router.replace("/(auth)/signin");
       }
     });
   }, []);

@@ -4,13 +4,11 @@ import { Tabs } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { Alert } from "react-native";
 
-// Define User type
 type User = {
   id: string;
-  email: string;
-  // Add other user fields here
+  email?: string;
 };
-// You can explore the built-in icon families and icons on the web at https://icons.expcao.fyi/
+
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
   color: string;
@@ -19,11 +17,15 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        setUser(user);
+        setUser({
+          id: user.id,
+          email: user.email || "",
+        });
       } else {
         Alert.alert("Error Accessing User");
       }
