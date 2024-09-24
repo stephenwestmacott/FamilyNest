@@ -7,6 +7,8 @@ import {
 } from "react-native-gesture-handler";
 import { Link, router } from "expo-router";
 
+//async function CreateUserinDB() {await supabase.from("users").insert([{ email: user.email, display_name: user.displayName }]);}
+
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +17,33 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
 
   async function signUpWithEmail() {
+    // Check if email is valid
+    if (!email.includes("@")) {
+      Alert.alert("Error", "Invalid email address");
+      return;
+    }
+
+    // Check if display name is not empty
+    if (displayName.length === 0) {
+      Alert.alert("Error", "Display Name cannot be empty");
+      return;
+    }
+
+    // Check if display name is longer than 25 characters
+    if (displayName.length > 25) {
+      Alert.alert("Error", "Display Name must 25 characters or less");
+      return;
+    }
+
+    // Check if password and confirm password match
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    // Check if password is at least 8 characters long
+    if (password.length < 8) {
+      Alert.alert("Error", "Password must be at least 8 characters long");
       return;
     }
 
@@ -26,7 +53,7 @@ export default function SignUpPage() {
       password: password,
       options: {
         data: {
-          displayName: displayName, // Save display name in the user metadata
+          name: displayName,
         },
       },
     });
