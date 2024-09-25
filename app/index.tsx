@@ -1,23 +1,22 @@
 import "react-native-url-polyfill/auto";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
 import { router } from "expo-router";
 
 export default function App() {
-  console.log("App started");
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        router.push("/(drawer)/(tabs)/grocery");
+        router.replace("/(drawer)/(tabs)/grocery");
       }
     });
 
+    // Redirect to sign in page if user does not have a session
     supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        router.push("/(drawer)/(tabs)/grocery");
-      } else {
+      if (!session) {
         router.replace("/(auth)/signin");
+      } else {
+        router.replace("/(drawer)/(tabs)/grocery");
       }
     });
   }, []);

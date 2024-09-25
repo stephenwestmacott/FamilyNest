@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
+import { router } from "expo-router";
 import { supabase } from "../../lib/supabase";
-import { Alert } from "react-native";
-
-type User = {
-  id: string;
-  email?: string;
-};
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -16,28 +11,37 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
-export default function TabLayout() {
-  const [user, setUser] = useState<User | null>(null);
-
+const TabLayout = () => {
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUser({
-          id: user.id,
-          email: user.email || "",
-        });
-      } else {
-        Alert.alert("Error Accessing User");
+    const checkFamilyMembership = async () => {
+      try {
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+
+        if (session) {
+          const { data, error } = await supabase
+            .from("ProfileFamilyJunction")
+            .select()
+            .eq("profile_id", session.user.id);
+
+          if (error) {
+            console.log("error", error);
+          } else {
+            if (data.length === 0) {
+              router.replace("/(family)/setup");
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error checking family membership:", error);
       }
-    });
+    };
+
+    checkFamilyMembership();
   }, []);
-
-  console.log("TabLayout");
-
-  // print user id
-  if (user) {
-    console.log(user.id);
-  }
 
   return (
     <Tabs
@@ -78,4 +82,6 @@ export default function TabLayout() {
       />
     </Tabs>
   );
-}
+};
+
+export default TabLayout;

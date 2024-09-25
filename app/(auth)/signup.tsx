@@ -53,7 +53,7 @@ export default function SignUpPage() {
       password: password,
       options: {
         data: {
-          name: displayName,
+          full_name: displayName,
         },
       },
     });
@@ -65,7 +65,7 @@ export default function SignUpPage() {
         "Verify Your Email",
         "A verification link has been sent to your email. Please verify your email to complete the registration process."
       );
-      router.push("/(auth)/signin");
+      router.replace("/(auth)/signin");
     }
     setLoading(false);
   }
