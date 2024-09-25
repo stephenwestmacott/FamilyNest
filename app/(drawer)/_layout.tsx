@@ -8,6 +8,7 @@ import { supabase } from "../lib/supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import QrCode from "@/components/QrCode";
 
 // Define Profile type based on your table schema
 type Profile = {
@@ -19,6 +20,7 @@ type Profile = {
 
 const CustomDrawerContent = (props: any) => {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [userID, setUserID] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -80,6 +82,7 @@ const CustomDrawerContent = (props: any) => {
           <Text>
             {profile ? JSON.stringify(profile, null, 2) : "Loading profile..."}
           </Text>
+          <QrCode familyID={profile?.id || "hi"} />
           <TouchableOpacity onPress={doLogout} style={styles.buttonContainer}>
             <Text style={styles.buttonText}>LOGOUT</Text>
           </TouchableOpacity>

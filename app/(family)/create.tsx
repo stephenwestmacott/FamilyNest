@@ -44,6 +44,9 @@ export default function CreateFamilyPage() {
         family_id: newFamily.family_id,
         role: "admin",
       });
+      await supabase.from("Profiles").insert({
+        current_family: newFamily.family_id,
+      });
     }
 
     if (familyError) {
